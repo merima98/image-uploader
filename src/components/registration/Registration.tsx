@@ -33,14 +33,14 @@ const Registration = () => {
 
   const onSubmit = async (values: FieldValues) => {
     try {
-      const { error } = await supabase.auth.signUp({
+      await supabase.auth.signUp({
         email: values.email,
         password: values.password,
       });
       setLoading(true);
       setLoadingMessage("Check your email!");
     } catch (error) {
-      console.error("Error from registration, ", error);
+      console.error(error);
       setLoadingMessage("");
     } finally {
       setLoading(false);
