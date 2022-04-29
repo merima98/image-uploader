@@ -1,12 +1,25 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Center,
+} from "@chakra-ui/react";
 
 const Header = () => {
   return (
-    <Breadcrumb>
-      <BreadcrumbItem>
-        <BreadcrumbLink href="/">Home</BreadcrumbLink>
-      </BreadcrumbItem>
-    </Breadcrumb>
+    <Center mb={4}>
+      <Breadcrumb
+        p={4}
+        backgroundColor={"white"}
+        position={"fixed"}
+        w={"100%"}
+        top={"0"}
+      >
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
+    </Center>
   );
 };
 

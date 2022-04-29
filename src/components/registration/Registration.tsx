@@ -6,9 +6,16 @@ import {
   FormControl,
   FormErrorMessage,
   Input,
+  InputGroup,
+  InputRightElement,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Eye, EyeOff } from "react-feather";
+import { FieldValues, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
 
 const Registration = () => {
   const {
@@ -17,78 +24,104 @@ const Registration = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (values: any) => {};
+  const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const changePasswordVisibility = () => {
+    setPasswordVisible(!isPasswordVisible);
+  };
 
+  const onSubmit = async (values: FieldValues) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+      });
+      setLoading(true);
+      setLoadingMessage("Check your email!");
+    } catch (error) {
+      console.error("Error from registration, ", error);
+      setLoadingMessage("");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isInvalid={errors.firstName}>
-          <Input
-            placeholder="First name"
-            {...register("firstName", {
-              required: "Fist name is required field!",
-              minLength: {
-                value: 2,
-                message: "First name must have at least two letters!",
-              },
-            })}
-          />
-          <FormErrorMessage>
-            {errors.firstName && errors.firstName.message}
-          </FormErrorMessage>
-        </FormControl>
-
-        <FormControl isInvalid={errors.lastName}>
-          <Input
-            placeholder="Last name"
-            {...register("lastName", {
-              required: "Last name is required field!",
-              minLength: {
-                value: 2,
-                message: "Last name must have at least two letters!",
-              },
-            })}
-          />
-          <FormErrorMessage>
-            {errors.lastName && errors.lastName.message}
-          </FormErrorMessage>
-        </FormControl>
-
-        <FormControl isInvalid={errors.email}>
-          <Input
-            placeholder="Email"
-            {...register("email", {
-              required: "Email is required field!",
-            })}
-          />
-          <FormErrorMessage>
-            {errors.email && errors.email.message}
-          </FormErrorMessage>
-        </FormControl>
-        <FormControl isInvalid={errors.password}>
-          <Input
-            placeholder="Password"
-            {...register("password", {
-              required: "Password is required field!",
-              minLength: {
-                value: 2,
-                message: "Password must have at least two letters!",
-              },
-            })}
-          />
-          <FormErrorMessage>
-            {errors.password && errors.password.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button w={"100%"} type="submit">
-          Register
-        </Button>
-      </form>
-      <Box>
-        <Text>
-          Already have an account? <Link to={"/"}>Login</Link>
-        </Text>
-      </Box>
+    <Container mt={"12rem"}>
+      <>
+        {loadingMessage ? (
+          <Text>We have sent you an email. Please check your email!</Text>
+        ) : (
+          <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl isInvalid={errors.email} mb={2}>
+                <Input
+                  placeholder="Email"
+                  type={"email"}
+                  {...register("email", {
+                    required: "Email is required field!",
+                  })}
+                />
+                <FormErrorMessage>
+                  {errors.email && errors.email.message}
+                </FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={errors.password} mb={2}>
+                <InputGroup>
+                  <Input
+                    placeholder="Password"
+                    type={isPasswordVisible ? "text" : "password"}
+                    {...register("password", {
+                      required: "Password is required field!",
+                      minLength: {
+                        value: 2,
+                        message: "Password must have at least two letters!",
+                      },
+                    })}
+                  />
+                  <InputRightElement>
+                    {isPasswordVisible ? (
+                      <EyeOff
+                        cursor={"pointer"}
+                        onClick={changePasswordVisibility}
+                      />
+                    ) : (
+                      <Eye
+                        cursor={"pointer"}
+                        onClick={changePasswordVisibility}
+                      />
+                    )}
+                  </InputRightElement>
+                </InputGroup>
+                <FormErrorMessage>
+                  {errors.password && errors.password.message}
+                </FormErrorMessage>
+              </FormControl>
+              <Button w={"100%"} type="submit" mb={2}>
+                Register
+              </Button>
+            </form>
+            <Box textAlign={"center"}>
+              <Text mb={5}>
+                Already have an account? <Link to={"/"}>Login</Link>
+              </Text>
+            </Box>
+          </>
+        )}
+      </>
+      <>
+        <Center>
+          {loading && (
+            <Spinner
+              thickness="6px"
+              speed="0.65s"
+              emptyColor={"gray.200"}
+              color={"blue.500"}
+              size={"xl"}
+            />
+          )}
+        </Center>
+      </>
     </Container>
   );
 };

@@ -1,26 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { ChakraProvider } from "@chakra-ui/react";
-
-import { LOGGED_OUT_USER } from "./routes";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { supabase } from "./supabaseClient";
+
 import Header from "./components/header/Header";
+import { LOGGED_IN_USER_ROUTES, LOGGED_OUT_USER } from "./routes";
+import { Session } from "@supabase/supabase-js";
 
 function App() {
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    setSession(supabase.auth.session());
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
   return (
     <ChakraProvider>
       <BrowserRouter>
         <Header />
         <Routes>
-          {LOGGED_OUT_USER.map((item) => {
-            return (
-              <Route
-                path={item.path}
-                key={item.path}
-                element={<item.element />}
-              />
-            );
-          })}
+          {!session
+            ? LOGGED_OUT_USER.map((item) => {
+                return (
+                  <Route
+                    path={item.path}
+                    key={item.path}
+                    element={<item.element />}
+                  />
+                );
+              })
+            : LOGGED_IN_USER_ROUTES.map((item) => {
+                return (
+                  <Route
+                    path={item.path}
+                    key={item.path}
+                    element={<item.element />}
+                  />
+                );
+              })}
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
