@@ -44,7 +44,24 @@ const Home = () => {
     setEmail(user?.email);
   };
 
-  const onSubmit = (values: FieldValues) => {};
+  const onSubmit = async (values: FieldValues) => {
+    try {
+      const user = supabase.auth.user();
+      const updates = {
+        id: user?.id,
+        firstname: values.firstname,
+        lastname: values.lastname,
+        email: user?.email,
+        username: values.username,
+      };
+
+      await supabase.from("profiles").upsert(updates, {
+        returning: "minimal",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Grid templateColumns={"1fr 2fr"} height={"100vh"}>
@@ -86,10 +103,10 @@ const Home = () => {
                     <FormControl mb={2}>
                       <Input value={email} readOnly={true} disabled={true} />
                     </FormControl>
-                    <FormControl mb={2} isInvalid={errors.firstName}>
+                    <FormControl mb={2} isInvalid={errors.firstname}>
                       <Input
                         placeholder="First name"
-                        {...register("firstName", {
+                        {...register("firstname", {
                           required: "First name is required field!",
                           minLength: {
                             value: 2,
@@ -99,13 +116,13 @@ const Home = () => {
                         })}
                       />
                       <FormErrorMessage>
-                        {errors.firstName && errors.firstName.message}
+                        {errors.firstname && errors.firstname.message}
                       </FormErrorMessage>
                     </FormControl>
-                    <FormControl mb={2} isInvalid={errors.lastName}>
+                    <FormControl mb={2} isInvalid={errors.lastname}>
                       <Input
                         placeholder="Last name"
-                        {...register("lastName", {
+                        {...register("lastname", {
                           required: "Lasr name is required field!",
                           minLength: {
                             value: 2,
@@ -115,7 +132,7 @@ const Home = () => {
                         })}
                       />
                       <FormErrorMessage>
-                        {errors.lastName && errors.lastName.message}
+                        {errors.lastname && errors.lastname.message}
                       </FormErrorMessage>
                     </FormControl>
                     <FormControl mb={2} isInvalid={errors.username}>
