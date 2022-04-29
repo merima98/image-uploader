@@ -3,6 +3,7 @@ import {
   Grid,
   Menu,
   MenuButton,
+  Text,
   MenuItem,
   Modal,
   MenuList,
@@ -18,13 +19,14 @@ import {
   FormErrorMessage,
 } from "@chakra-ui/react";
 import { FieldValues, useForm } from "react-hook-form";
-import { ChevronDown, Settings, LogOut } from "react-feather";
+import { ChevronDown, Settings, LogOut, Plus } from "react-feather";
 import { useEffect, useState } from "react";
 
 import { supabase } from "../../supabaseClient";
 
 const Home = () => {
   const [email, setEmail] = useState<string | undefined>("");
+  const [buckets, setBuckets] = useState([]);
   const signOut = () => {
     supabase.auth.signOut();
   };
@@ -63,36 +65,56 @@ const Home = () => {
     }
   };
 
+  const createNewCollection = () => {};
+
   return (
     <Grid templateColumns={"1fr 2fr"} height={"100vh"}>
       <Box mt={"3rem"} borderRight={"1px solid"} borderColor={"gray.200"}>
-        <Menu>
-          <MenuButton w={"100%"} p={2} as={Button} rightIcon={<ChevronDown />}>
-            {email}
-          </MenuButton>
-          <MenuList>
-            <MenuItem
-              onClick={onOpen}
-              display={"flex"}
-              justifyContent={"space-between"}
+        <Box mb={4}>
+          <Menu>
+            <MenuButton
+              w={"100%"}
+              p={2}
+              as={Button}
+              rightIcon={<ChevronDown />}
             >
-              <Box>Settings</Box>
-              <Box>
-                <Settings />
-              </Box>
-            </MenuItem>
-            <MenuItem
-              onClick={signOut}
-              display={"flex"}
-              justifyContent={"space-between"}
-            >
-              <Box>Signout</Box>
-              <Box>
-                <LogOut />
-              </Box>
-            </MenuItem>
-          </MenuList>
-        </Menu>
+              {email}
+            </MenuButton>
+            <MenuList>
+              <MenuItem
+                onClick={onOpen}
+                display={"flex"}
+                justifyContent={"space-between"}
+              >
+                <Box>Settings</Box>
+                <Box>
+                  <Settings />
+                </Box>
+              </MenuItem>
+              <MenuItem
+                onClick={signOut}
+                display={"flex"}
+                justifyContent={"space-between"}
+              >
+                <Box>Signout</Box>
+                <Box>
+                  <LogOut />
+                </Box>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
+        <Box
+          p={2}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+        >
+          <Text>Collection</Text>
+          <Text cursor={"pointer"} onClick={createNewCollection}>
+            <Plus />
+          </Text>
+        </Box>
         <>
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay>
