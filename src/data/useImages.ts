@@ -17,7 +17,7 @@ const useImages = (): {
   insertImageCollectionCollection: (
     name?: string
   ) => Promise<PostgrestSingleResponse<any>>;
-  deleteImgeCollection: (id: number) => Promise<PostgrestSingleResponse<any>>;
+  deleteImageCollection: (id: number) => Promise<PostgrestSingleResponse<any>>;
 } => {
   const session = useSession();
   const key = "/images";
@@ -69,7 +69,7 @@ const useImages = (): {
     return resp;
   };
 
-  const deleteImgeCollection = async (id: number) => {
+  const deleteImageCollection = async (id: number) => {
     await supabase.from("links").delete().eq("collection_id", id);
     const resp = await supabase.from("images").delete().eq("id", id).single();
     mutate(
@@ -90,7 +90,7 @@ const useImages = (): {
     isLoading: and(!error, !data),
     error,
     insertImageCollectionCollection,
-    deleteImgeCollection,
+    deleteImageCollection,
   };
 };
 

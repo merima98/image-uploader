@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import useImages from "../../data/useImages";
 import SingleImage from "../images/SingleImage";
+import SingleImageDetails from "../images/SingleImageDetails";
 
 type ImageCollection = {
   id: number;
@@ -34,11 +35,18 @@ type ImageCollection = {
 const Home = () => {
   const {
     imageCollections,
-    deleteImgeCollection,
+    deleteImageCollection,
     error,
     insertImageCollectionCollection,
     isLoading,
   } = useImages();
+
+  const [imageData, setData] = useState<any>();
+
+  const childToParent = (data: ImageCollection) => {
+    console.log("Child to parent is, ", data);
+    setData(data);
+  };
   const [images, setImages] = useState<ImageCollection[]>([]);
   const toast = useToast();
   const [email, setEmail] = useState<string | undefined>("");
@@ -61,7 +69,7 @@ const Home = () => {
     getImageCollections().then((res) => {
       setImages(res);
     });
-  });
+  }, [imageCollections, images, imageData]);
 
   const getProfile = async () => {
     const user = supabase.auth.user();
@@ -160,7 +168,11 @@ const Home = () => {
         <Box>
           {images.map((image) => {
             return (
-              <SingleImage key={image.id} name={image.name} id={image.id} />
+              <SingleImage
+                childToParent={childToParent}
+                key={image.id}
+                image={image}
+              />
             );
           })}
         </Box>
@@ -242,7 +254,9 @@ const Home = () => {
           </Modal>
         </>
       </Box>
-      <Box mt={"12rem"}>right content</Box>
+      <Box mt={"3rem"}>
+        <SingleImageDetails name={imageData?.name} id={imageData?.id} />
+      </Box>
     </Grid>
   );
 };
