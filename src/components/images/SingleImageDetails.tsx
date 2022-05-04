@@ -5,7 +5,6 @@ import {
   FormControl,
   FormErrorMessage,
   Input,
-  InputGroup,
   Menu,
   MenuButton,
   MenuItem,
@@ -23,7 +22,6 @@ import { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { ChevronDown } from "react-feather";
 
-import { supabase } from "../../supabaseClient";
 import useImage from "../../data/useImage";
 
 type ImageCollection = {
@@ -35,12 +33,16 @@ const SingleImageDetails = (props: ImageCollection) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { updateCollection, isLoading, collection, error } = useImage(props.id);
-
+  const [collectionName, setCollectionName] = useState("");
   const {
     handleSubmit,
     formState: { errors },
     register,
   } = useForm();
+
+  useEffect(() => {
+    setCollectionName(props.name);
+  }, [setCollectionName]);
 
   const updateImageCollection = () => {
     setIsModalOpen(true);
@@ -53,7 +55,7 @@ const SingleImageDetails = (props: ImageCollection) => {
   const onSubmit = async (values: FieldValues) => {
     await updateCollection({ name: values.name });
     setIsModalOpen(false);
-    console.log("Props on submit are, ", props);
+    setCollectionName(values.name);
   };
 
   return (
@@ -68,7 +70,7 @@ const SingleImageDetails = (props: ImageCollection) => {
               as={Button}
               rightIcon={<ChevronDown />}
             >
-              {props.name}
+              {collectionName ? collectionName : props.name}
             </MenuButton>
             <MenuList>
               <MenuItem

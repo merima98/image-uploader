@@ -44,7 +44,6 @@ const Home = () => {
   const [imageData, setData] = useState<any>();
 
   const childToParent = (data: ImageCollection) => {
-    console.log("Child to parent is, ", data);
     setData(data);
   };
   const [images, setImages] = useState<ImageCollection[]>([]);
