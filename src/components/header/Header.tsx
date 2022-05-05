@@ -26,9 +26,21 @@ const Header = () => {
           <Box mb={2}>Home</Box>
         </BreadcrumbItem>
         <BreadcrumbItem>
-          <Text>
-            <Sun onClick={toggleColorMode} />
-          </Text>
+          {colorMode === "light" ? (
+            <Text cursor={"pointer"}>
+              <Moon
+                onClick={toggleColorMode}
+                style={{ height: "20px", width: "20px" }}
+              />
+            </Text>
+          ) : (
+            <Text cursor={"pointer"}>
+              <Sun
+                onClick={toggleColorMode}
+                style={{ height: "20px", width: "20px" }}
+              />
+            </Text>
+          )}
         </BreadcrumbItem>
       </Breadcrumb>
     </Center>
