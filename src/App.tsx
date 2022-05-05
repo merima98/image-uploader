@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 import { Session } from "@supabase/supabase-js";
@@ -22,6 +21,7 @@ function App() {
 
   return (
     <ChakraProvider>
+      <ColorModeScript initialColorMode="light" />
       <BrowserRouter>
         <Header />
         <CollectionNavigation />
