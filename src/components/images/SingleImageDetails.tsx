@@ -23,6 +23,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { ChevronDown } from "react-feather";
 
 import useImage from "../../data/useImage";
+import useImages from "../../data/useImages";
 
 type ImageCollection = {
   id: number;
@@ -30,9 +31,10 @@ type ImageCollection = {
 };
 
 const SingleImageDetails = (props: ImageCollection) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onOpen } = useDisclosure();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { updateCollection, isLoading, collection, error } = useImage(props.id);
+  const { updateCollection } = useImage(props.id);
+  const { deleteImageCollection } = useImages();
   const [collectionName, setCollectionName] = useState("");
   const {
     handleSubmit,
@@ -42,7 +44,7 @@ const SingleImageDetails = (props: ImageCollection) => {
 
   useEffect(() => {
     setCollectionName(props.name);
-  }, [setCollectionName]);
+  }, [setCollectionName, props.name]);
 
   const updateImageCollection = () => {
     setIsModalOpen(true);
@@ -56,6 +58,10 @@ const SingleImageDetails = (props: ImageCollection) => {
     await updateCollection({ name: values.name });
     setIsModalOpen(false);
     setCollectionName(values.name);
+  };
+
+  const deleteCollection = async () => {
+    await deleteImageCollection(props.id);
   };
 
   return (
@@ -120,7 +126,7 @@ const SingleImageDetails = (props: ImageCollection) => {
                 </>
               </MenuItem>
               <MenuItem display={"flex"} justifyContent={"space-between"}>
-                <Box>Delete image collection</Box>
+                <Box onClick={deleteCollection}>Delete image collection</Box>
               </MenuItem>
             </MenuList>
           </Menu>
