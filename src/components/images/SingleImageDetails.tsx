@@ -20,20 +20,17 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import { ChevronDown } from "react-feather";
 
 import useImage from "../../data/useImage";
 import useImages from "../../data/useImages";
 
-type ImageCollection = {
-  id: number;
-  name: string;
-};
-
-const SingleImageDetails = (props: ImageCollection) => {
+const SingleImageDetails = () => {
+  const params = useParams();
   const { onOpen } = useDisclosure();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { updateCollection } = useImage(props.id);
+  const { updateCollection, collection } = useImage(Number(params.id));
   const { deleteImageCollection } = useImages();
   const [collectionName, setCollectionName] = useState("");
   const {
@@ -43,8 +40,8 @@ const SingleImageDetails = (props: ImageCollection) => {
   } = useForm();
 
   useEffect(() => {
-    setCollectionName(props.name);
-  }, [setCollectionName, props.name]);
+    setCollectionName(collection.name);
+  }, [setCollectionName, params.id, collection.name]);
 
   const updateImageCollection = () => {
     setIsModalOpen(true);
@@ -61,12 +58,12 @@ const SingleImageDetails = (props: ImageCollection) => {
   };
 
   const deleteCollection = async () => {
-    await deleteImageCollection(props.id);
+    await deleteImageCollection(Number(params.id));
   };
 
   return (
     <>
-      {props.name ? (
+      {collection.name ? (
         <Box display={"flex"}>
           <Menu>
             <MenuButton
@@ -76,7 +73,7 @@ const SingleImageDetails = (props: ImageCollection) => {
               as={Button}
               rightIcon={<ChevronDown />}
             >
-              {collectionName ? collectionName : props.name}
+              {collectionName ? collectionName : collection.name}
             </MenuButton>
             <MenuList>
               <MenuItem
@@ -103,7 +100,7 @@ const SingleImageDetails = (props: ImageCollection) => {
                               {...register("name", {
                                 required: "This field is required!",
                               })}
-                              defaultValue={props?.name}
+                              defaultValue={collection.name}
                             />
                             <FormErrorMessage>
                               {errors.name && errors.name.message}
