@@ -33,6 +33,7 @@ import { ChevronDown } from "react-feather";
 import useImage from "../../data/useImage";
 import useImages from "../../data/useImages";
 import React from "react";
+import NewLinkForm from "../link/NewLinkForm";
 
 const SingleImageDetails = () => {
   const params = useParams();
@@ -176,9 +177,7 @@ const SingleImageDetails = () => {
               </MenuItem>
             </MenuList>
           </Menu>
-          <Box>
-            <Button>Add new link</Button>
-          </Box>
+          <NewLinkForm />
         </Box>
       ) : (
         <Center mt={"12rem"}>Please select collection!</Center>
