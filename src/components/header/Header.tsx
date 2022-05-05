@@ -1,9 +1,4 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Center,
-} from "@chakra-ui/react";
+import { Breadcrumb, Box, BreadcrumbItem, Center } from "@chakra-ui/react";
 
 const Header = () => {
   return (
@@ -16,7 +11,7 @@ const Header = () => {
         top={"0"}
       >
         <BreadcrumbItem>
-          <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          <Box mb={2}>Home</Box>
         </BreadcrumbItem>
       </Breadcrumb>
     </Center>
