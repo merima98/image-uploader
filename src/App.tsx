@@ -3,10 +3,11 @@ import "./App.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { supabase } from "./supabaseClient";
+import { Session } from "@supabase/supabase-js";
 
 import Header from "./components/header/Header";
 import { LOGGED_IN_USER_ROUTES, LOGGED_OUT_USER } from "./routes";
-import { Session } from "@supabase/supabase-js";
+import CollectionNavigation from "./components/header/CollectionNavigation";
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -23,6 +24,7 @@ function App() {
     <ChakraProvider>
       <BrowserRouter>
         <Header />
+        <CollectionNavigation />
         <Routes>
           {!session
             ? LOGGED_OUT_USER.map((item) => {

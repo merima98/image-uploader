@@ -1,4 +1,10 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Box,
   Button,
   Center,
@@ -17,32 +23,34 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { useParams, useNavigate } from "react-router-dom";
 import { ChevronDown } from "react-feather";
 
 import useImage from "../../data/useImage";
+import useImages from "../../data/useImages";
+import React from "react";
+import NewLinkForm from "../link/NewLinkForm";
 
-type ImageCollection = {
-  id: number;
-  name: string;
-};
-
-const SingleImageDetails = (props: ImageCollection) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const SingleImageDetails = () => {
+  const params = useParams();
+  const toast = useToast();
+  const navigation = useNavigate();
+  const { onOpen } = useDisclosure();
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { updateCollection, isLoading, collection, error } = useImage(props.id);
-  const [collectionName, setCollectionName] = useState("");
+  const { updateCollection, collection } = useImage(Number(params.id));
+  const { deleteImageCollection } = useImages();
+  const cancelRef = React.useRef() as React.MutableRefObject<HTMLInputElement>;
+
   const {
     handleSubmit,
     formState: { errors },
     register,
   } = useForm();
-
-  useEffect(() => {
-    setCollectionName(props.name);
-  }, [setCollectionName]);
 
   const updateImageCollection = () => {
     setIsModalOpen(true);
@@ -52,15 +60,34 @@ const SingleImageDetails = (props: ImageCollection) => {
     setIsModalOpen(false);
   };
 
+  const openAlertDialog = () => {
+    setIsAlertDialogOpen(true);
+  };
+
+  const closeAlertDialog = () => {
+    setIsAlertDialogOpen(false);
+  };
+
   const onSubmit = async (values: FieldValues) => {
     await updateCollection({ name: values.name });
     setIsModalOpen(false);
-    setCollectionName(values.name);
+  };
+
+  const deleteCollection = async () => {
+    await deleteImageCollection(Number(params.id));
+    navigation("/");
+    toast({
+      title: "Image collection deleted.",
+      description: "You have deleted image collection.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   return (
     <>
-      {props.name ? (
+      {collection.name ? (
         <Box display={"flex"}>
           <Menu>
             <MenuButton
@@ -70,7 +97,7 @@ const SingleImageDetails = (props: ImageCollection) => {
               as={Button}
               rightIcon={<ChevronDown />}
             >
-              {collectionName ? collectionName : props.name}
+              {collection.name}
             </MenuButton>
             <MenuList>
               <MenuItem
@@ -97,7 +124,7 @@ const SingleImageDetails = (props: ImageCollection) => {
                               {...register("name", {
                                 required: "This field is required!",
                               })}
-                              defaultValue={props?.name}
+                              defaultValue={collection.name}
                             />
                             <FormErrorMessage>
                               {errors.name && errors.name.message}
@@ -120,13 +147,37 @@ const SingleImageDetails = (props: ImageCollection) => {
                 </>
               </MenuItem>
               <MenuItem display={"flex"} justifyContent={"space-between"}>
-                <Box>Delete image collection</Box>
+                <Box onClick={openAlertDialog}>Delete image collection</Box>
+                <AlertDialog
+                  isOpen={isAlertDialogOpen}
+                  leastDestructiveRef={cancelRef}
+                  onClose={closeAlertDialog}
+                >
+                  <AlertDialogOverlay>
+                    <AlertDialogContent>
+                      <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                        Delete image collection
+                      </AlertDialogHeader>
+                      <AlertDialogBody>
+                        Are you sure? You want to delete this collection?
+                      </AlertDialogBody>
+                      <AlertDialogFooter>
+                        <Button onClick={closeAlertDialog}>Cancel</Button>
+                        <Button
+                          colorScheme="red"
+                          onClick={deleteCollection}
+                          ml={3}
+                        >
+                          Delete
+                        </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialogOverlay>
+                </AlertDialog>
               </MenuItem>
             </MenuList>
           </Menu>
-          <Box>
-            <Button>Add new link</Button>
-          </Box>
+          <NewLinkForm />
         </Box>
       ) : (
         <Center mt={"12rem"}>Please select collection!</Center>
