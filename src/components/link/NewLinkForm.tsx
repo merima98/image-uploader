@@ -13,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import useLinks from "../../data/useLinks";
 
 const NewLinkForm = () => {
   const {
@@ -21,30 +23,37 @@ const NewLinkForm = () => {
     register,
   } = useForm();
 
-  const [isLinkModalOpen, setIsLinkMpdalOpen] = useState(false);
+  const params = useParams();
+
+  const { insertLink } = useLinks(params.id);
+
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const openLinkModal = () => {
-    setIsLinkMpdalOpen(true);
+    setIsLinkModalOpen(true);
   };
   const closeLinkModal = () => {
-    setIsLinkMpdalOpen(false);
+    setIsLinkModalOpen(false);
   };
 
   const onSubmit = async (values: FieldValues) => {
-    console.log("Values from for are, ", values);
+    await insertLink(values.link);
+    setIsLinkModalOpen(false);
   };
   return (
     <Box>
-      <Button onClick={openLinkModal}>Add new link</Button>
+      <Button size={"sm"} colorScheme={"green"} onClick={openLinkModal}>
+        Add new link
+      </Button>
       <Modal isOpen={isLinkModalOpen} onClose={closeLinkModal}>
         <ModalOverlay />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent p={2}>
             <ModalHeader>Add new link into collection</ModalHeader>
             <ModalCloseButton />
-            <FormControl mb={2} isInvalid={errors.url}>
+            <FormControl mb={2} isInvalid={errors.link}>
               <Input
                 placeholder="URL"
-                {...register("url", {
+                {...register("link", {
                   required: "URL is required field!",
                   minLength: {
                     value: 2,
@@ -53,7 +62,7 @@ const NewLinkForm = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.url && errors.url.message}
+                {errors.link && errors.link.message}
               </FormErrorMessage>
             </FormControl>
             <ModalFooter>
