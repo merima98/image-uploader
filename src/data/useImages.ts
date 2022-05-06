@@ -70,7 +70,7 @@ const useImages = (): {
   };
 
   const deleteImageCollection = async (id: number) => {
-    await supabase.from("links").delete().eq("collection_id", id);
+    await supabase.from("links").delete().eq("image_id", id);
     const resp = await supabase.from("images").delete().eq("id", id).single();
     mutate(
       key,
