@@ -34,6 +34,7 @@ import useImage from "../../data/useImage";
 import useImages from "../../data/useImages";
 import React from "react";
 import NewLinkForm from "../link/NewLinkForm";
+import LinksTable from "../link/LinksTable";
 
 const SingleImageDetails = () => {
   const params = useParams();
@@ -88,97 +89,102 @@ const SingleImageDetails = () => {
   return (
     <>
       {collection.name ? (
-        <Box display={"flex"}>
-          <Menu>
-            <MenuButton
-              w={"100%"}
-              p={2}
-              mr={2}
-              as={Button}
-              rightIcon={<ChevronDown />}
-            >
-              {collection.name}
-            </MenuButton>
-            <MenuList>
-              <MenuItem
-                onClick={onOpen}
-                display={"flex"}
-                justifyContent={"space-between"}
+        <>
+          <Box display={"flex"}>
+            <Menu>
+              <MenuButton
+                w={"100%"}
+                p={2}
+                size={"sm"}
+                colorScheme={"blue"}
+                mr={2}
+                as={Button}
+                rightIcon={<ChevronDown />}
               >
-                <Box onClick={updateImageCollection}>
-                  Update image collection
-                </Box>
-                <>
-                  <Modal isOpen={isModalOpen} onClose={onModalClose}>
-                    <ModalOverlay />
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                      <ModalContent>
-                        <ModalHeader>
-                          Update title of image collection
-                        </ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                          <FormControl isInvalid={errors.name}>
-                            <Input
-                              placeholder="Content"
-                              {...register("name", {
-                                required: "This field is required!",
-                              })}
-                              defaultValue={collection.name}
-                            />
-                            <FormErrorMessage>
-                              {errors.name && errors.name.message}
-                            </FormErrorMessage>
-                          </FormControl>
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button
-                            colorScheme="blue"
-                            mr={3}
-                            onClick={onModalClose}
-                          >
-                            Close
-                          </Button>
-                          <Button type="submit">Save changes</Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </form>
-                  </Modal>
-                </>
-              </MenuItem>
-              <MenuItem display={"flex"} justifyContent={"space-between"}>
-                <Box onClick={openAlertDialog}>Delete image collection</Box>
-                <AlertDialog
-                  isOpen={isAlertDialogOpen}
-                  leastDestructiveRef={cancelRef}
-                  onClose={closeAlertDialog}
+                {collection.name}
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={onOpen}
+                  display={"flex"}
+                  justifyContent={"space-between"}
                 >
-                  <AlertDialogOverlay>
-                    <AlertDialogContent>
-                      <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                        Delete image collection
-                      </AlertDialogHeader>
-                      <AlertDialogBody>
-                        Are you sure? You want to delete this collection?
-                      </AlertDialogBody>
-                      <AlertDialogFooter>
-                        <Button onClick={closeAlertDialog}>Cancel</Button>
-                        <Button
-                          colorScheme="red"
-                          onClick={deleteCollection}
-                          ml={3}
-                        >
-                          Delete
-                        </Button>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialogOverlay>
-                </AlertDialog>
-              </MenuItem>
-            </MenuList>
-          </Menu>
-          <NewLinkForm />
-        </Box>
+                  <Box onClick={updateImageCollection}>
+                    Update image collection
+                  </Box>
+                  <>
+                    <Modal isOpen={isModalOpen} onClose={onModalClose}>
+                      <ModalOverlay />
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <ModalContent>
+                          <ModalHeader>
+                            Update title of image collection
+                          </ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody>
+                            <FormControl isInvalid={errors.name}>
+                              <Input
+                                placeholder="Content"
+                                {...register("name", {
+                                  required: "This field is required!",
+                                })}
+                                defaultValue={collection.name}
+                              />
+                              <FormErrorMessage>
+                                {errors.name && errors.name.message}
+                              </FormErrorMessage>
+                            </FormControl>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              colorScheme="blue"
+                              mr={3}
+                              onClick={onModalClose}
+                            >
+                              Close
+                            </Button>
+                            <Button type="submit">Save changes</Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </form>
+                    </Modal>
+                  </>
+                </MenuItem>
+                <MenuItem display={"flex"} justifyContent={"space-between"}>
+                  <Box onClick={openAlertDialog}>Delete image collection</Box>
+                  <AlertDialog
+                    isOpen={isAlertDialogOpen}
+                    leastDestructiveRef={cancelRef}
+                    onClose={closeAlertDialog}
+                  >
+                    <AlertDialogOverlay>
+                      <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                          Delete image collection
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                          Are you sure? You want to delete this collection?
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                          <Button onClick={closeAlertDialog}>Cancel</Button>
+                          <Button
+                            colorScheme="red"
+                            onClick={deleteCollection}
+                            ml={3}
+                          >
+                            Delete
+                          </Button>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialogOverlay>
+                  </AlertDialog>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+            <NewLinkForm />
+          </Box>
+          <LinksTable />
+        </>
       ) : (
         <Center mt={"12rem"}>Please select collection!</Center>
       )}

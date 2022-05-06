@@ -1,4 +1,4 @@
-import { useSWRConfig } from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 
 import { supabase } from "../supabaseClient";
@@ -11,10 +11,27 @@ type Link = {
 const useLinks = (
   id: string | string[] | undefined
 ): {
+  links: Link[];
   insertLink: (link: string) => Promise<PostgrestSingleResponse<any>>;
 } => {
-  const key = `/images/${id}/links`;
+  const key = `/collections/${id}/links`;
+  const { data } = useSWR(id ? key : null, () => getLinks());
   const { mutate } = useSWRConfig();
+
+  const getLinks = async () => {
+    const response = await supabase
+      .from("links")
+      .select(`id, link`)
+      .eq("image_id", id)
+      .order("id", { ascending: false });
+
+    if (response.error) {
+      throw response.error;
+    }
+    if (response.data) {
+      return response.data;
+    }
+  };
 
   const insertLink = async (link: string) => {
     const resp = await supabase
@@ -33,6 +50,7 @@ const useLinks = (
   };
 
   return {
+    links: data || [],
     insertLink,
   };
 };

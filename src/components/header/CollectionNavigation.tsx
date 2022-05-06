@@ -21,6 +21,7 @@ import {
 import { FieldValues, useForm } from "react-hook-form";
 import { ChevronDown, Settings, LogOut, Plus } from "react-feather";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { supabase } from "../../supabaseClient";
 import useImages from "../../data/useImages";
@@ -31,12 +32,13 @@ type ImageCollection = {
   name: string;
 };
 const Home = () => {
+  const navigation = useNavigate();
   const { imageCollections, insertImageCollectionCollection } = useImages();
-  const [images, setImages] = useState<ImageCollection[]>([]);
   const toast = useToast();
   const [email, setEmail] = useState<string | undefined>("");
-  const signOut = () => {
-    supabase.auth.signOut();
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    navigation("/");
   };
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -47,14 +49,7 @@ const Home = () => {
 
   useEffect(() => {
     getProfile();
-    const getImageCollections = async () => {
-      return imageCollections;
-    };
-
-    getImageCollections().then((res) => {
-      setImages(res);
-    });
-  }, [imageCollections, images]);
+  }, [imageCollections]);
 
   const getProfile = async () => {
     const user = supabase.auth.user();
@@ -115,7 +110,14 @@ const Home = () => {
     <Box mt={"3rem"} borderRight={"1px solid"} borderColor={"gray.200"}>
       <Box mb={4}>
         <Menu>
-          <MenuButton w={"100%"} p={2} as={Button} rightIcon={<ChevronDown />}>
+          <MenuButton
+            w={"100%"}
+            size={"sm"}
+            colorScheme={"blue"}
+            p={2}
+            as={Button}
+            rightIcon={<ChevronDown />}
+          >
             {email}
           </MenuButton>
           <MenuList>
@@ -154,7 +156,7 @@ const Home = () => {
         </Text>
       </Box>
       <Box>
-        {images.map((image) => {
+        {imageCollections.map((image) => {
           return <SingleImage key={image.id} image={image} />;
         })}
       </Box>

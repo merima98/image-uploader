@@ -27,20 +27,23 @@ const NewLinkForm = () => {
 
   const { insertLink } = useLinks(params.id);
 
-  const [isLinkModalOpen, setIsLinkMpdalOpen] = useState(false);
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const openLinkModal = () => {
-    setIsLinkMpdalOpen(true);
+    setIsLinkModalOpen(true);
   };
   const closeLinkModal = () => {
-    setIsLinkMpdalOpen(false);
+    setIsLinkModalOpen(false);
   };
 
   const onSubmit = async (values: FieldValues) => {
     await insertLink(values.link);
+    setIsLinkModalOpen(false);
   };
   return (
     <Box>
-      <Button onClick={openLinkModal}>Add new link</Button>
+      <Button size={"sm"} colorScheme={"green"} onClick={openLinkModal}>
+        Add new link
+      </Button>
       <Modal isOpen={isLinkModalOpen} onClose={closeLinkModal}>
         <ModalOverlay />
         <form onSubmit={handleSubmit(onSubmit)}>
