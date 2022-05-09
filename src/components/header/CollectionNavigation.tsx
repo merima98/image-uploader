@@ -163,9 +163,15 @@ const Home = () => {
             </Text>
           </Box>
           <Box>
-            {imageCollections.map((image) => {
-              return <SingleImage key={image.id} image={image} />;
-            })}
+            {imageCollections.length ? (
+              imageCollections.map((image) => {
+                return <SingleImage key={image.id} image={image} />;
+              })
+            ) : (
+              <Text p={2}>
+                No collections available. Please add new collection!
+              </Text>
+            )}
           </Box>
           <>
             <Modal isOpen={isOpen} onClose={onClose}>
