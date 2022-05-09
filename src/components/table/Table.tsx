@@ -5,7 +5,10 @@ import {
   Tr,
   Th,
   Tbody,
+  Text,
   Td,
+  Center,
+  Box,
 } from "@chakra-ui/react";
 
 const Table = (props: any) => {
@@ -13,29 +16,45 @@ const Table = (props: any) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
   return (
-    <ChakraTable variant={"simple"} size={"sm"} {...getTableProps()}>
-      <Thead>
-        {headerGroups.map((headerGroup) => (
-          <Tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <Th {...column.getHeaderProps()}>{column.render("Header")}</Th>
+    <>
+      {props.data.length ? (
+        <ChakraTable variant={"simple"} size={"sm"} {...getTableProps()}>
+          <Thead>
+            {headerGroups.map((headerGroup) => (
+              <Tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <Th {...column.getHeaderProps()}>
+                    {column.render("Header")}
+                  </Th>
+                ))}
+              </Tr>
             ))}
-          </Tr>
-        ))}
-      </Thead>
-      <Tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <Tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>;
-              })}
-            </Tr>
-          );
-        })}
-      </Tbody>
-    </ChakraTable>
+          </Thead>
+          <Tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <Tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => {
+                    return (
+                      <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                    );
+                  })}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </ChakraTable>
+      ) : (
+        <Center>
+          <Box>
+            <Text fontSize={20} fontWeight={"bold"} textTransform={"uppercase"}>
+              No data available yet!
+            </Text>
+          </Box>
+        </Center>
+      )}
+    </>
   );
 };
 
