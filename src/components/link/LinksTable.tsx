@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
@@ -7,8 +8,6 @@ import Table from "../table/Table";
 const LinksTable = () => {
   const params = useParams();
   const { links } = useLinks(params.id);
-  console.log("Links are, ", links);
-  const data = links;
 
   const columns = useMemo(
     () => [
@@ -25,9 +24,9 @@ const LinksTable = () => {
   );
 
   return (
-    <div>
+    <Box>
       <Table data={links} columns={columns} />
-    </div>
+    </Box>
   );
 };
 
