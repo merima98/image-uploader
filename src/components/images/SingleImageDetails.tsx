@@ -90,7 +90,7 @@ const SingleImageDetails = () => {
     <>
       {collection.name ? (
         <>
-          <Box display={"flex"}>
+          <Box display={"flex"} mb={4}>
             <Menu>
               <MenuButton
                 w={"100%"}

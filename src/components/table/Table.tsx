@@ -1,33 +1,41 @@
 import { useTable } from "react-table";
+import {
+  Table as ChakraTable,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+} from "@chakra-ui/react";
 
 const Table = (props: any) => {
   const tableInstance = useTable({ columns: props.columns, data: props.data });
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
   return (
-    <table {...getTableProps()}>
-      <thead>
+    <ChakraTable variant={"simple"} size={"sm"} {...getTableProps()}>
+      <Thead>
         {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
+          <Tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+              <Th {...column.getHeaderProps()}>{column.render("Header")}</Th>
             ))}
-          </tr>
+          </Tr>
         ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
+      </Thead>
+      <Tbody {...getTableBodyProps()}>
         {rows.map((row) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()}>
+            <Tr {...row.getRowProps()}>
               {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                return <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>;
               })}
-            </tr>
+            </Tr>
           );
         })}
-      </tbody>
-    </table>
+      </Tbody>
+    </ChakraTable>
   );
 };
 
