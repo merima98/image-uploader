@@ -1,33 +1,60 @@
 import { useTable } from "react-table";
+import {
+  Table as ChakraTable,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Text,
+  Td,
+  Center,
+  Box,
+} from "@chakra-ui/react";
 
 const Table = (props: any) => {
   const tableInstance = useTable({ columns: props.columns, data: props.data });
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
   return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+    <>
+      {props.data.length ? (
+        <ChakraTable variant={"simple"} size={"sm"} {...getTableProps()}>
+          <Thead>
+            {headerGroups.map((headerGroup) => (
+              <Tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <Th {...column.getHeaderProps()}>
+                    {column.render("Header")}
+                  </Th>
+                ))}
+              </Tr>
             ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          </Thead>
+          <Tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <Tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => {
+                    return (
+                      <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                    );
+                  })}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </ChakraTable>
+      ) : (
+        <Center>
+          <Box>
+            <Text fontSize={20} fontWeight={"bold"} textTransform={"uppercase"}>
+              No data available yet!
+            </Text>
+          </Box>
+        </Center>
+      )}
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Center, Spinner } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
@@ -25,7 +25,19 @@ const LinksTable = () => {
 
   return (
     <Box>
-      <Table data={links} columns={columns} />
+      {links ? (
+        <Table data={links} columns={columns} />
+      ) : (
+        <Center mt={20}>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        </Center>
+      )}
     </Box>
   );
 };
